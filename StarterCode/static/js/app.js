@@ -1,3 +1,12 @@
+// *************
+// TO DO STILL
+// *************
+
+// 1. add labels to all charts: X axis, Y axis, title
+// 2. prepopulate using selection = 940
+// 31. jay's link to bonus visualization
+// 32. bonus
+
 // ****************
 // Read JSON file
 // ****************
@@ -55,9 +64,11 @@ function optionChanged(selection) {
   // Import data again
   d3.json("samples.json").then((importedData) => {
     var samples = importedData.samples;
-
+    var metadata = importedData.metadata;
+    
     console.log(samples)
     var data = samples.filter((sampleData) => sampleData.id == selection)[0]
+    var metadataData = metadata.filter(iterable => iterable.id == selection)[0]
 
     console.log(data)
     // Sort the data array using the greekSearchResults value
@@ -68,13 +79,13 @@ function optionChanged(selection) {
     // data = data.slice(0, 10);
     // console.log(data)
     // // Reverse the array due to Plotly's defaults
-    // // data = data.reverse();
+    // data = data.reverse();
 
     // // Trace1 for the OTU Data
     var trace1 = {
-      x: data.otu_ids.slice(0,10),
-      y: data.sample_values.slice(0,10),
-      text: data.otu_labels.slice(0,10),
+      x: data.sample_values.slice(0,10).reverse(),
+      y: data.otu_ids.map(element => `otu_ids: ${element}.`).slice(0,10).reverse(),
+      text: data.otu_labels.slice(0,10).reverse(),
       name: "OTU Id Bar Chart",
       type: "bar",
       orientation: "h"
@@ -108,15 +119,17 @@ function optionChanged(selection) {
     x: data.otu_ids,
     y: data.sample_values,
     name: "Bubble Chart",
-    type: "bubble",
+    mode: "markers",
     marker: {
-      size: data.sample_values
+      size: data.sample_values,
+      color: data.otu_ids,    // },
+    
+      text_value: data.otu_labels
+
     },
     // DEBUG!! - MARKER COLORS
-    // marker: {
-    //   color: data.map(row => row.otu_ids)
-    // },
-    text_value: data.otu_labels
+    // bracket pair colorizer extension
+
   };
 
   // data
@@ -131,25 +144,32 @@ function optionChanged(selection) {
   // ***********************
   // Modeled after 14.2.9 for filtering
   // Modeled after 14.3.4 for appending table
-  // DEBUG!! - data.filter not a function
-  // DEBUG!! - not working
-  data.filter(metadata => metadata.id = selection);
-  console.log(data.filter(metadata => metadata.id = selection));
+  console.log(data)
 
-  data.metadata.forEach(function (metadata) {
-    console.log(metadata);
-    var row = sample - metadata.append("tr");
-    Object.entries(metadata).forEach(function ([key, value]) {
+  // Do I need to import Json data again?  where do parentheses go?
+  
+  // data.filter(metadata => metadata.id = selection);
+  // console.log(data.filter(metadata => metadata.id = selection));
+
+  // metadataData.forEach(function (metadata) {
+  //   console.log(metadata);
+    
+    // QUESTION:  should append be attached to id sample-metadata?
+    var metadataTag = d3.selectAll("#sample-metadata");
+    var table = metadataTag.append("table");
+    Object.entries(metadataData).forEach(function ([key, value]) {
       console.log(key, value);
       // Append a cell to the row for each value
       // in the weather report object
-      var cell = row.append("td");
-      cell.text(`${key}: ${value}`);
+      var row = table.append("tr");
+      var element = row.append("td");
+      element.text(`${key}: ${value}`);
     });
-  });
+  // });
 
   });
-
+// last homework clear out the data.  need line that clears out the data
+// .html("")
 
   
 
