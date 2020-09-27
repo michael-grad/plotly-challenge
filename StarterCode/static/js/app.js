@@ -2,10 +2,11 @@
 // TO DO STILL
 // *************
 
-// 1. add labels to all charts: X axis, Y axis, title
-// 2. prepopulate using selection = 940
-// 31. jay's link to bonus visualization
-// 32. bonus
+// 1. prepopulate using selection = 940
+// 2. jay's link to bonus visualization
+// 3. bonus section
+// 4. Update metadata table to clear out whenever a new event handler is run.
+// 5. Bar chart:  move text popup to right of mouse
 
 // ****************
 // Read JSON file
@@ -54,8 +55,9 @@ function optionChanged(selection) {
   // *****************************
   // Step 2 - Horizontal Bar Chart
   // *****************************
-  // QUESTION:  How to limit chart to top 10
+
   // Modeled after 15.3.7
+  // Data Structure
   // samples
   // id
   // otu_ids
@@ -96,13 +98,16 @@ function optionChanged(selection) {
 
     // Apply the group bar mode to the layout
     var layout = {
-      title: "Bar Chart",
       margin: {
-        l: 100,
+        l: 120,
         r: 100,
         t: 100,
         b: 100
-      }
+      },      
+      title: "OTU ID vs. Sample Values",
+      xaxis: { title: "OTU ID" },
+      yaxis: { title: "Sample Values" }
+
     };
 
     Plotly.newPlot("bar", chartData, layout);
@@ -127,16 +132,25 @@ function optionChanged(selection) {
       text_value: data.otu_labels
 
     },
-    // DEBUG!! - MARKER COLORS
-    // bracket pair colorizer extension
 
   };
+  var layout2 = {
+    margin: {
+      l: 100,
+      r: 100,
+      t: 100,
+      b: 100
+    },      
+    title: "OTU ID vs. Sample Values",
+    xaxis: { title: "OTU ID" },
+    yaxis: { title: "Sample Values" }
 
+  };
   // data
   var chartData = [trace1];
 
   // comment out layout
-  Plotly.newPlot("bubble", chartData);
+  Plotly.newPlot("bubble", chartData, layout2);
 
 
   // ***********************
@@ -153,8 +167,7 @@ function optionChanged(selection) {
 
   // metadataData.forEach(function (metadata) {
   //   console.log(metadata);
-    
-    // QUESTION:  should append be attached to id sample-metadata?
+  
     var metadataTag = d3.selectAll("#sample-metadata");
     var table = metadataTag.append("table");
     Object.entries(metadataData).forEach(function ([key, value]) {
